@@ -1,0 +1,29 @@
+services:
+  spe-postgres:
+    container_name: spe-postgres
+    image: postgres:17.4-alpine
+    volumes:
+      - postgres-spe:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=pwd
+
+  spe-clickhouse:
+    container_name: spe-clickhouse
+    image: clickhouse:25.1-jammy
+    ports:
+      - "8123:8123"
+      - "9000:9000"
+    volumes:
+      - clickhouse-spe:/var/lib/clickhouse
+    environment:
+      - CLICKHOUSE_DB=default
+      - CLICKHOUSE_USER=default
+      - CLICKHOUSE_PASSWORD=qwe
+      - CLICKHOUSE_LISTEN_HOST=0.0.0.0
+
+volumes:
+  postgres-spe:
+  clickhouse-spe:
