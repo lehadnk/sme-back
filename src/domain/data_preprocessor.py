@@ -1,3 +1,4 @@
+import numpy as np
 import pandas as pd
 
 def split_train_test(df, train_from: str, train_to: str, test_from: str, test_to):
@@ -12,8 +13,17 @@ def split_X_y(data):
     # if (data.get("year") is not None):
     X = data[
         [
-            'year', 'month', 'day', 'sma7', 'sma30', 'sma90',
-            'sma180', 'lag7', 'lag45', 'lag90', 'lag180',
+            'year',
+            'month',
+            'day',
+            'sma7',
+            'sma30',
+            'sma90',
+            'sma180',
+            'lag7',
+            'lag45',
+            'lag90',
+            'lag180',
         ]
     ]
     # else:
@@ -28,6 +38,11 @@ def prepare_data(data):
     data['year'] = data['date'].dt.year
     data['month'] = data['date'].dt.month
     data['day'] = data['date'].dt.day
+    data['month'] = data['date'].dt.month.astype(str)
+    # data['month_sin']: np.sin(2 * np.pi * data['date'].dt.month / 12)
+    # data['month_cos']: np.cos(2 * np.pi * data['date'].dt.month / 12)
+    # data['day_sin']: np.sin(2 * np.pi * data['date'].dt.day / 31)
+    # data['day_cos']: np.cos(2 * np.pi * data['date'].dt.day / 31)
 
     data['sma7'] = data['close'].rolling(window=7).mean()
     data['sma30'] = data['close'].rolling(window=30).mean()

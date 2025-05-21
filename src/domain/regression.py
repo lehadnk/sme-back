@@ -2,6 +2,7 @@ import math
 from datetime import datetime
 from typing import Optional
 
+import numpy as np
 import pandas as pd
 from dateutil.relativedelta import relativedelta
 
@@ -71,12 +72,15 @@ def perform_regression(model: Optional[Model], ticker: Optional[str], date_from:
     close_values = []
 
     current_date = get_next_business_day(historical_data_to)
-    # last_close = stock_data['close']
     while current_date <= date_to:
         X = {
             'year': datetime.strptime(current_date, '%Y-%m-%d').year,
             'month': datetime.strptime(current_date, '%Y-%m-%d').month,
             'day': datetime.strptime(current_date, '%Y-%m-%d').day,
+            # 'month_sin': np.sin(2 * np.pi * datetime.strptime(current_date, '%Y-%m-%d').month / 12),
+            # 'month_cos': np.cos(2 * np.pi * datetime.strptime(current_date, '%Y-%m-%d').month / 12),
+            # 'day_sin': np.sin(2 * np.pi * datetime.strptime(current_date, '%Y-%m-%d').day / 31),
+            # 'day_cos': np.cos(2 * np.pi * datetime.strptime(current_date, '%Y-%m-%d').day / 31),
             'sma7': None,
             'sma30': None,
             'sma90': None,
@@ -85,7 +89,6 @@ def perform_regression(model: Optional[Model], ticker: Optional[str], date_from:
             'lag45': None,
             'lag90': None,
             'lag180': None,
-            # 'close': last_close
         }
         prepare_X(X, stock_data)
         X_df = pd.DataFrame([X])
@@ -94,7 +97,6 @@ def perform_regression(model: Optional[Model], ticker: Optional[str], date_from:
         if current_date >= date_from:
             dates.append(current_date)
             close_values.append(X['close'])
-            # last_close = X['close']
 
         current_date = get_next_business_day(current_date)
 

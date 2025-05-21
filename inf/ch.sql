@@ -1,7 +1,7 @@
 CREATE TABLE stock_data
 (
     ticker String,
-    date Date,
+    date Date32,
     open Float64,
     high Float64,
     low Float64,

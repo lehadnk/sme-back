@@ -1,8 +1,8 @@
 import datetime
 import sys
 
-from db.db import get_best_models_for_tickers_with_train_data_to_at_least
-from db.stock_price_data_storage import insert_prediction
+from persistence.postgres.db import get_best_models_for_tickers_with_train_data_to_at_least
+from persistence.clickhouse.stock_price_data_storage import insert_prediction
 from domain.regression import perform_regression
 
 if len(sys.argv) < 3:

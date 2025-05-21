@@ -1,9 +1,12 @@
 import csv
 import os
-import sys
 from datetime import datetime
+import sys
+from pathlib import Path
 
-from clickhouse_driver import Client
+sys.path.append(str(Path(__file__).resolve().parent.parent.parent))
+
+from persistence.clickhouse.stock_price_data_storage import insert_stock_data
 
 if len(sys.argv) < 2:
     print("Please provide the directory path as a command-line argument.")
@@ -15,14 +18,6 @@ if not os.path.isdir(directory):
     sys.exit(1)
 
 filter = None if len(sys.argv) < 3 else sys.argv[2]
-
-client = Client(
-    host="localhost",
-    port=9000,
-    user="default",
-    password="qwe",
-    database="default",
-)
 
 def safe_float(value):
     try:
@@ -41,7 +36,7 @@ def insert_data_from_csv(file_path, ticker):
         next(csv_reader) # Skip the header row
 
         data = []
-        batch_size = 100  # Set a batch size for the inserts
+        batch_size = 1000  # Set a batch size for the inserts
         for row in csv_reader:
             date = datetime.strptime(row[0], '%Y-%m-%d').date()
             open_price = safe_float(row[1])
@@ -54,11 +49,11 @@ def insert_data_from_csv(file_path, ticker):
             data.append((ticker, date, open_price, high, low, close, adj_close, volume))
 
             if len(data) >= batch_size:
-                client.execute('INSERT INTO stock_data (ticker, date, open, high, low, close, adj_close, volume) VALUES', data)
+                insert_stock_data(data)
                 data = []
 
         if data:
-            client.execute('INSERT INTO stock_data (ticker, date, open, high, low, close, adj_close, volume) VALUES', data)
+            insert_stock_data(data)
 
     print(f"Successfully imported {ticker} data from {file_path}.")
 

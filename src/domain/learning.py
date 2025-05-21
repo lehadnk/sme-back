@@ -1,3 +1,4 @@
+import numpy as np
 import pandas as pd
 from sklearn.ensemble import GradientBoostingRegressor as GBRegressor, RandomForestRegressor
 
@@ -13,7 +14,13 @@ def incremental_learning(train_data, test_data, ticker, model_type):
     train_X, train_y = split_X_y(train_data)
 
     if model_type == ModelType.gradient_boosting:
-        model = GBRegressor(n_estimators=100, learning_rate=0.1, max_depth=3)
+        model = GBRegressor(
+            n_estimators=300,
+            learning_rate=0.05,
+            max_depth=4,
+            subsample=0.7,  # менее стабильные деревья
+            max_features='sqrt',  # случайный поднабор признаков
+        )
     elif model_type == ModelType.random_forest:
         model = RandomForestRegressor(
             n_estimators=100,
@@ -38,6 +45,10 @@ def incremental_learning(train_data, test_data, ticker, model_type):
             'year': row['date'].year,
             'month': row['date'].month,
             'day': row['date'].day,
+            # 'month_sin': np.sin(2 * np.pi * row['date'].month / 12),
+            # 'month_cos': np.cos(2 * np.pi * row['date'].month / 12),
+            # 'day_sin': np.sin(2 * np.pi * row['date'].day / 31),
+            # 'day_cos': np.cos(2 * np.pi * row['date'].day / 31),
             'sma7': None,
             'sma30': None,
             'sma90': None,

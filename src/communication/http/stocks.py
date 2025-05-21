@@ -1,6 +1,5 @@
 from fastapi import APIRouter, Query
 
-import app
 from persistence.clickhouse.stock_price_data_storage import get_stock_data, get_unique_tickers, get_min_max_dates, \
     get_most_growing_stocks
 

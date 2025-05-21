@@ -1,6 +1,9 @@
 from config import pool
 
 
+def import_data():
+    pass
+
 def get_stock_data(ticker: str, start_date: str, end_date: str):
     ch_client = pool.get_client()
     query = """
@@ -74,3 +77,11 @@ def insert_prediction(ticker: str, date: str, estimated_at: str, model_id: str, 
     }
 
     ch_client.query(query, params)
+
+def insert_stock_data(data: list):
+    with pool.get_client() as ch_client:
+        ch_client.insert(
+            'stock_data',
+            data,
+            ['ticker', 'date', 'open', 'high', 'low', 'close', 'adj_close', 'volume']
+        )
