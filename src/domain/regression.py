@@ -137,7 +137,7 @@ def create_model_from_experiment(experiment: Experiment):
     save_model(model)
 
     min_max_dates = get_min_max_dates(experiment.ticker)
-    date_obj = datetime.strptime(min_max_dates[1], "%Y-%m-%d").date()
+    date_obj = min_max_dates[1]
     next_day = date_obj + timedelta(days=1)
     six_months_later = date_obj + relativedelta(months=6)
     next_day_str = next_day.strftime("%Y-%m-%d")
