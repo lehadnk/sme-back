@@ -142,6 +142,7 @@ def create_model_from_experiment(experiment: Experiment):
     six_months_later = date_obj + relativedelta(months=6)
     next_day_str = next_day.strftime("%Y-%m-%d")
     six_months_later_str = six_months_later.strftime("%Y-%m-%d")
+    print("Calculating predictions from " + next_day_str + " to " + six_months_later_str + " for " + experiment.ticker)
 
     dates, predictions = perform_regression(model, None, next_day_str, six_months_later_str)
 
