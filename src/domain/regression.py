@@ -8,7 +8,7 @@ from dateutil.relativedelta import relativedelta
 from sklearn.ensemble import GradientBoostingRegressor
 from sklearn.metrics import mean_squared_error
 
-from persistence.clickhouse.stock_price_data_storage import get_min_max_dates, insert_prediction
+from persistence.clickhouse.stock_price_data_storage import get_min_max_dates, insert_predictions
 from persistence.postgres.db import save_experiment, save_model, get_best_model_for_date_and_ticker
 from persistence.postgres.models import Experiment, Model, User
 from persistence.model_storage import save_ml_model, load_ml_model
@@ -145,8 +145,11 @@ def create_model_from_experiment(experiment: Experiment):
 
     dates, predictions = perform_regression(model, None, next_day_str, six_months_later_str)
 
-    for date, prediction in zip(dates, predictions):
-        insert_prediction(model.ticker, date, datetime.today().strftime("%Y-%m-%d"), model.id, prediction)
+    bulk_data = []
+    for date_str, prediction in zip(dates, predictions):
+        date_obj = datetime.strptime(date_str, "%Y-%m-%d").date()
+        bulk_data.append([model.ticker, date_obj, datetime.now(), str(model.id), prediction])
+    insert_predictions(bulk_data)
 
     return model
 

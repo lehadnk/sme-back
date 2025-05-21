@@ -1,7 +1,8 @@
 from fastapi import APIRouter, HTTPException, Depends, Query
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
-from starlette.concurrency import run_in_threadpool
+from fastapi import BackgroundTasks
+
 
 from config import get_db
 from persistence.postgres.db import find_experiment_by_id, find_user_by_id
@@ -50,13 +51,14 @@ def make_experiment(request: MakeExperimentRequest):
     )
 
 @experiments_router.post("/experiments/{id}/save")
-async def save_model_from_experiment(id: int):
+def save_model_from_experiment(id: int, background_tasks: BackgroundTasks):
     experiment = find_experiment_by_id(id)
     if experiment is None:
         raise HTTPException(status_code=404, detail="Experiment not found")
 
     # Run the blocking create_model_from_experiment in a threadpool, await it
-    model = await run_in_threadpool(create_model_from_experiment, experiment)
+    model = create_model_from_experiment(experiment)
+    # background_tasks.add_task(create_model_from_experiment, experiment)
 
     # If `model` is not JSON serializable, convert it or return something else
     return model

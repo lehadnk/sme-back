@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from config import pool
 
 
@@ -60,23 +62,13 @@ def get_most_growing_stocks(comparison_date, forecast_date):
     result = ch_client.query(query, parameters={"comparison_date": comparison_date, "forecast_date": forecast_date}).result_rows
     return [{"ticker": row[0], "growth": row[1], "today_close": row[2], "forecast_close": row[3]} for row in result]
 
-def insert_prediction(ticker: str, date: str, estimated_at: str, model_id: str, close: float):
-    ch_client = pool.get_client()
-
-    query = """
-        INSERT INTO predictions (ticker, date, estimated_at, model_id, close)
-        VALUES (%(ticker)s, %(date)s, %(estimated_at)s, %(model_id)s, %(close)s)
-    """
-
-    params = {
-        "ticker": ticker,
-        "date": date,
-        "estimated_at": estimated_at,
-        "model_id": model_id,
-        "close": close
-    }
-
-    ch_client.query(query, params)
+def insert_predictions(predictions: list):
+    with pool.get_client() as ch_client:
+        ch_client.insert(
+            'predictions',
+            predictions,
+            ['ticker', 'date', 'estimated_at', 'model_id', 'close']
+        )
 
 def insert_stock_data(data: list):
     with pool.get_client() as ch_client:
