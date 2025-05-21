@@ -139,7 +139,7 @@ def create_model_from_experiment(experiment: Experiment):
     min_max_dates = get_min_max_dates(experiment.ticker)
     date_obj = min_max_dates[1]
     next_day = date_obj + timedelta(days=1)
-    six_months_later = date_obj + relativedelta(months=6)
+    six_months_later = date_obj + relativedelta(days=95)
     next_day_str = next_day.strftime("%Y-%m-%d")
     six_months_later_str = six_months_later.strftime("%Y-%m-%d")
     print("Calculating predictions from " + next_day_str + " to " + six_months_later_str + " for " + experiment.ticker)
