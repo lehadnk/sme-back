@@ -147,7 +147,7 @@ def create_model_from_experiment(experiment: Experiment):
     dates, predictions = perform_regression(model, None, next_day_str, six_months_later_str)
 
     for date, prediction in zip(dates, predictions):
-        insert_prediction(model.ticker, date, date.today().strftime("%Y-%m-%d"), model.id, prediction)
+        insert_prediction(model.ticker, date, datetime.today().strftime("%Y-%m-%d"), model.id, prediction)
 
     return model
 
