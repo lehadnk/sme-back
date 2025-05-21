@@ -8,6 +8,7 @@ from dateutil.relativedelta import relativedelta
 
 from sklearn.ensemble import GradientBoostingRegressor
 from sklearn.metrics import mean_squared_error
+from starlette.concurrency import run_in_threadpool
 
 from persistence.clickhouse.stock_price_data_storage import get_min_max_dates, insert_prediction
 from persistence.postgres.db import save_experiment, save_model, get_best_model_for_date_and_ticker
@@ -114,7 +115,13 @@ def get_next_business_day(date_str: str) -> str:
 
     return next_business_day.strftime('%Y-%m-%d')
 
-def create_model_from_experiment(experiment: Experiment):
+def heavy_regression_and_insert(model, next_day_str, six_months_later_str):
+    dates, predictions = perform_regression(model, None, next_day_str, six_months_later_str)
+    for date, prediction in zip(dates, predictions):
+        insert_prediction(model.ticker, date, datetime.today().strftime("%Y-%m-%d"), model.id, prediction)
+    return model
+
+async def create_model_from_experiment(experiment: Experiment):
     stock_data = load_stock_data(experiment.ticker, experiment.train_data_from.strftime("%Y-%m-%d"), experiment.test_data_to.strftime("%Y-%m-%d"))
     stock_data = prepare_data(stock_data)
     X_train, y_train = split_X_y(stock_data)
@@ -144,10 +151,7 @@ def create_model_from_experiment(experiment: Experiment):
     six_months_later_str = six_months_later.strftime("%Y-%m-%d")
     print("Calculating predictions from " + next_day_str + " to " + six_months_later_str + " for " + experiment.ticker)
 
-    dates, predictions = perform_regression(model, None, next_day_str, six_months_later_str)
-
-    for date, prediction in zip(dates, predictions):
-        insert_prediction(model.ticker, date, datetime.today().strftime("%Y-%m-%d"), model.id, prediction)
+    await run_in_threadpool(heavy_regression_and_insert, model, next_day_str, six_months_later_str)
 
     return model
 
