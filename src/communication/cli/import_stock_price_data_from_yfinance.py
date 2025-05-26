@@ -7,7 +7,8 @@ from pathlib import Path
 
 sys.path.append(str(Path(__file__).resolve().parent.parent.parent))
 
-from persistence.clickhouse.stock_price_data_storage import get_min_max_dates, insert_stock_data
+from persistence.clickhouse.stock_price_data_storage import get_min_max_dates, insert_stock_data, \
+    batch_insert_stock_data
 
 if len(sys.argv) < 2:
     print("Please provide the ticker as a command-line argument.")
@@ -39,7 +40,7 @@ for row in filtered_data.itertuples():
 
     data.append((ticker, date, open_price, high, low, close, adj_close, volume))
 
-insert_stock_data(data)
+batch_insert_stock_data(data)
 
 if (len(filtered_data) == 0):
     print("No additional data to import")

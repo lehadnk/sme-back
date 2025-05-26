@@ -1,3 +1,4 @@
+from collections import defaultdict
 from datetime import datetime
 
 from config import pool
@@ -69,6 +70,22 @@ def insert_predictions(predictions: list):
             predictions,
             ['ticker', 'date', 'estimated_at', 'model_id', 'close']
         )
+
+
+def batch_insert_stock_data(data, batch_partition_limit=100):
+    partitions = defaultdict(list)
+    for row in data:
+        dt = row[1]
+        partition_key = dt.year * 100 + dt.month  # toYYYYMM equivalent
+        partitions[partition_key].append(row)
+
+    partition_keys = list(partitions.keys())
+    for i in range(0, len(partition_keys), batch_partition_limit):
+        batch_keys = partition_keys[i:i+batch_partition_limit]
+        batch_data = []
+        for key in batch_keys:
+            batch_data.extend(partitions[key])
+        insert_stock_data(batch_data)
 
 def insert_stock_data(data: list):
     with pool.get_client() as ch_client:
