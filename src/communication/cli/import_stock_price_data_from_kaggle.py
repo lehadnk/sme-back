@@ -20,7 +20,6 @@ if not os.path.isdir(directory):
 filter = None if len(sys.argv) < 3 else sys.argv[2]
 
 def safe_float(value):
-    print(value)
     try:
         return float(value) if value else 0.0
     except ValueError:
