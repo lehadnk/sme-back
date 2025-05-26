@@ -1,4 +1,5 @@
 import csv
+import math
 import os
 from datetime import datetime
 import sys
@@ -21,8 +22,11 @@ filter = None if len(sys.argv) < 3 else sys.argv[2]
 
 def safe_float(value):
     try:
-        return float(value) if value else 0.0
-    except ValueError:
+        f = float(value) if value else 0.0
+        if math.isnan(f):
+            return 0.0
+        return f
+    except (ValueError, TypeError):
         return 0.0
 
 def insert_data_from_csv(file_path, ticker):
