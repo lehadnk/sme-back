@@ -35,10 +35,3 @@ create table experiments(
     regression_model regression_model not null,
     model_filename varchar not null
 );
-
-create table predictions(
-    id bigserial primary key,
-    model_id int references models("id") on delete restrict,
-    date timestamp not null,
-    price float not null
-);
