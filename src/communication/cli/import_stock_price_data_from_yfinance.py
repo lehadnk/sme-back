@@ -36,7 +36,7 @@ for row in filtered_data.itertuples():
     high = row.High
     low = row.Low
     close = row.Close
-    if math.isnan(close):
+    if not isinstance(close, numbers.Real) or math.isnan(close):
         continue
 
     adj_close = row.Close
