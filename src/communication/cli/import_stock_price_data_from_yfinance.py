@@ -39,7 +39,7 @@ for row in filtered_data.itertuples():
     if not math.isnan(close):
         continue
 
-    adj_close = row.AdjClose
+    adj_close = row.Close
     volume = row.Volume
 
     data.append((ticker, date, open_price, high, low, close, adj_close, volume))
