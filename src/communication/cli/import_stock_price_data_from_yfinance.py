@@ -1,3 +1,4 @@
+import math
 from zoneinfo import ZoneInfo
 
 import yfinance as yf
@@ -35,9 +36,10 @@ for row in filtered_data.itertuples():
     high = row.High
     low = row.Low
     close = row.Close
-    print(close)
+    if not math.isnan(close):
+        continue
 
-    adj_close = row.Close
+    adj_close = row.AdjClose
     volume = row.Volume
 
     data.append((ticker, date, open_price, high, low, close, adj_close, volume))
