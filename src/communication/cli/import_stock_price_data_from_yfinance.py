@@ -36,7 +36,7 @@ for row in filtered_data.itertuples():
     high = row.High
     low = row.Low
     close = row.Close
-    if not math.isnan(close):
+    if math.isnan(close):
         continue
 
     adj_close = row.Close
