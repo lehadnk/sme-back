@@ -35,8 +35,7 @@ for row in filtered_data.itertuples():
     high = row.High
     low = row.Low
     close = row.Close
-    if close is None:
-        continue
+    print(close)
 
     adj_close = row.Close
     volume = row.Volume
