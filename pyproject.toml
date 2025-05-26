@@ -22,6 +22,7 @@ pyjwt = "^2.10.1"
 xgboost = "^3.0.0"
 matplotlib = "^3.10.1"
 yfinance = "^0.2.55"
+aiomoex = "^2.1.2"
 
 
 [tool.poetry.group.dev.dependencies]
