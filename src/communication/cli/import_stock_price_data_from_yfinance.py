@@ -1,4 +1,5 @@
 import math
+import numbers
 from zoneinfo import ZoneInfo
 
 import yfinance as yf
