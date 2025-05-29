@@ -1,11 +1,6 @@
 from collections import defaultdict
-from datetime import datetime
 
 from config import pool
-
-
-def import_data():
-    pass
 
 def get_stock_data(ticker: str, start_date: str, end_date: str):
     print("In: get_stock_data")

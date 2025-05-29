@@ -1,3 +1,5 @@
+from contextlib import contextmanager
+
 import clickhouse_connect
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
@@ -30,8 +32,15 @@ class ClickHouseConnectionPool:
             )
             self.pool.put(client)
 
+    @contextmanager
     def get_client(self):
-        return self.pool.get()
+        print("Get client: remaining =", self.pool.qsize())
+
+        client = self.pool.get()
+        try:
+            yield client
+        finally:
+            self.pool.put(client)
 
     def release_client(self, client):
         self.pool.put(client)
