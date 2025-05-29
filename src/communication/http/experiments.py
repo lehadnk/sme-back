@@ -52,6 +52,8 @@ def make_experiment(request: MakeExperimentRequest):
 
 @experiments_router.post("/experiments/{id}/save")
 def save_model_from_experiment(id: int, background_tasks: BackgroundTasks):
+    print("In: save_model_from_experiment")
+
     experiment = find_experiment_by_id(id)
     if experiment is None:
         raise HTTPException(status_code=404, detail="Experiment not found")
@@ -69,5 +71,6 @@ def list_experiements(
         page: int = Query(1, ge=1),
         page_size: int = Query(10, le=100)
 ):
+    print("In: list_experiments")
     offset = (page - 1) * page_size
     return db.query(Experiment).offset(offset).limit(page_size).all()

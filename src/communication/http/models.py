@@ -8,5 +8,7 @@ models_router = APIRouter()
 
 @models_router.get("/models/")
 def get_models(db: Session = Depends(get_db)):
+    print("In: get_models")
+
     models = db.query(Model).all()
     return {"items": models}

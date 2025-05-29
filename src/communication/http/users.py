@@ -4,6 +4,8 @@ users_router = APIRouter()
 
 @users_router.get("/users/list")
 def get_users_list():
+    print("In: get_users_list")
+
     return {
         "data": [
             {"id": 1, "username": "AlexeyZauzin", "role": "researcher"},
@@ -18,6 +20,8 @@ def get_users_list():
 
 @users_router.get("/users/{id}")
 def get_user(id: int):
+    print("In: get_user")
+
     return {
         "id": id,
         "username": "AlexeyZauzin",

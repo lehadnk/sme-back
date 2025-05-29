@@ -13,6 +13,8 @@ class AuthenticationRequest(BaseModel):
 
 @authentication_router.post("/authentication/login")
 def authenticate(request: AuthenticationRequest):
+    print("In: authenticate")
+
     user = find_user_by_username(request.username)
     if not user:
         raise HTTPException(status_code=403, detail="Login failed")
@@ -24,4 +26,6 @@ def authenticate(request: AuthenticationRequest):
 
 @authentication_router.get("/authentication/current")
 def current(user: User = Depends(require_any_authentication)):
+    print("In: current")
+
     return user
