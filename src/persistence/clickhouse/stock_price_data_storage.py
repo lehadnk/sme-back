@@ -22,7 +22,7 @@ def get_stock_data(ticker: str, start_date: str, end_date: str):
         return result
 
 def get_unique_tickers():
-    print("In: get_unique_tickers)")
+    print("In: get_unique_tickers")
 
     with pool.get_client() as ch_client:
         query = """
